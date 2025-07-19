@@ -2,6 +2,7 @@ import json
 from getpass import getpass
 from utils import is_valid_password, is_valid_name, make_password, print_satatus
 from models import User
+from task import Task  # Ensure there is a 'task.py' file in the same directory as this script
 
 
 class Manager:
@@ -43,6 +44,9 @@ class Manager:
 
     @staticmethod
     def load_users():
+        import os
+        if not os.path.exists('data/users.json'):
+            return []
         with open('data/users.json') as jsonfile:
             try:
                 data = json.load(jsonfile)
@@ -51,7 +55,7 @@ class Manager:
                     user = User.from_dict(item)
                     users.append(user)
                 return users
-            except:
+            except Exception:
                 return []
 
     def save_users(self):
@@ -64,3 +68,31 @@ class Manager:
             if user.username == username:
                 return True
         return False
+    def create_task(self):
+        """Task yaratish"""
+        title = input("Task nomi: ")
+        description = input("Tavsif: ")
+        task = Task(title, description)
+        self.user.add_task(task)
+        print_satatus(f"'{title}' yaratildi!", 'success')
+    
+    def show_tasks(self):
+        """Tasklarni ko'rsatish"""
+        tasks = self.user.get_tasks()
+        
+        if not tasks:
+            print_satatus("Task yo'q!", 'error')
+            return
+        
+        print(f"\n{self.user.name} tasklari:")
+        for i, task in enumerate(tasks, 1):
+            status = "✓" if task.completed else "○"
+            print(f"{i}. {status} {task.title}")
+        
+        # Task bajarish uchun
+        try:
+            num = int(input("\nQaysi taskni bajarasiz? (0 - chiqish): "))
+            if num > 0 and num <= len(tasks):
+                tasks[num-1].mark_as_completed()
+        except:
+            pass

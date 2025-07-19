@@ -1,4 +1,5 @@
 from uuid import uuid1
+from task import Task
 
 
 class User:
@@ -22,3 +23,14 @@ class User:
         user.user_id = data['user_id']
         return user
     
+    def add_task(self, task: Task):
+        self.tasks.append(task)
+    
+    def get_tasks(self) -> list[Task]:
+        return self.tasks
+    
+    def get_pending_tasks(self) -> list[Task]:
+        return [task for task in self.tasks if not task.completed]
+    
+    def get_completed_tasks(self) -> list[Task]:
+        return [task for task in self.tasks if task.completed]
