@@ -16,19 +16,21 @@ def main() -> None:
                     print_status(f"{manager.user.name} sizni accounting.")
                     print_menu()
 
-                    choice = input("> ")
-                    
-                    if choice == '1':  # Task Yaratish
-                        manager.create_task()
-                    elif choice == '2':  # Tasklarni Ko'rish
-                        manager.show_tasks()
-                    elif choice == '3':  # Quit (Logout)
-                        manager.logout()
-                        break
+                    choice = input(">")
+
+                    if choice == '1':
+                        manager.add_task()
+                    elif choice == '2':
+                        pass
+                    elif choice == '3':
+                        pass
+                    elif choice == '4':
+                        pass
+                    elif choice == '5':
+                        manager.user = None
                     else:
-                        print_status("Noto'g'ri tanlov!", 'error')
-        
-        elif op == '2':  # Sign Up
+                        print("xato menu")
+        elif op == '2':
             manager.register()
         
         elif op == '3':  # Quit

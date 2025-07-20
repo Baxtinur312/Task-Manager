@@ -1,8 +1,8 @@
 import json
+from datetime import datetime
 from getpass import getpass
 from utils import is_valid_password, is_valid_name, make_password, print_satatus
-from models import User
-from task import Task  # Ensure there is a 'task.py' file in the same directory as this script
+from models import User, Task
 
 
 class Manager:
@@ -68,31 +68,29 @@ class Manager:
             if user.username == username:
                 return True
         return False
-    def create_task(self):
-        """Task yaratish"""
-        title = input("Task nomi: ")
-        description = input("Tavsif: ")
-        task = Task(title, description)
-        self.user.add_task(task)
-        print_satatus(f"'{title}' yaratildi!", 'success')
-    
-    def show_tasks(self):
-        """Tasklarni ko'rsatish"""
-        tasks = self.user.get_tasks()
-        
-        if not tasks:
-            print_satatus("Task yo'q!", 'error')
-            return
-        
-        print(f"\n{self.user.name} tasklari:")
-        for i, task in enumerate(tasks, 1):
-            status = "✓" if task.completed else "○"
-            print(f"{i}. {status} {task.title}")
-        
-        # Task bajarish uchun
-        try:
-            num = int(input("\nQaysi taskni bajarasiz? (0 - chiqish): "))
-            if num > 0 and num <= len(tasks):
-                tasks[num-1].mark_as_completed()
-        except:
-            pass
+
+    def add_task(self):
+        title = input('title: ')
+        description = input('description: ')
+        created_at = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        deatline = input('deatline: ')
+
+        task = {
+            'user_id': self.user.user_id,
+            'title': title,
+            'description': description,
+            'created_at': created_at,
+            'deatline': deatline,
+            'completed': False
+        }
+
+        with open('data/tasks.json') as jsonfile:
+            try:
+                tasks = json.load(jsonfile)
+            except:
+                tasks = []
+
+        with open('data/tasks.json', 'w') as jsonfile:
+            tasks.append(task)
+            json.dump(tasks, jsonfile, indent=4)
+
